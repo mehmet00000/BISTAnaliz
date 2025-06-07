@@ -32,8 +32,8 @@ from ta.momentum import RSIIndicator, StochasticOscillator, WilliamsRIndicator
 from ta.volume import OnBalanceVolumeIndicator, ChaikinMoneyFlowIndicator
 from ta.volatility import BollingerBands, AverageTrueRange, KeltnerChannel
 
-# API Anahtarları
-GEMINI_API_KEY= os.getenv("GEMINI_API_KEY") or ""
+# API Anahtarları - Güvenlik için environment variable kullanın
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or ""
 XAI_API_KEY = os.getenv("XAI_API_KEY") or ""
 GROQ_API_KEY = os.getenv("GROQ_API_KEY") or ""
 
@@ -139,25 +139,25 @@ def is_half_day_trading(date):
 def display_market_status():
     """Borsa durumunu detaylı gösterir"""
     print("=" * 60)
-    print("BORSA İSTANBUL (BIST) DURUM BİLGİSİ")
+    print("🏛️  BORSA İSTANBUL (BIST) DURUM BİLGİSİ")
     print("=" * 60)
     
     # Türkiye saatini göster
     turkey_tz = datetime.timezone(datetime.timedelta(hours=3))
     now = datetime.datetime.now(turkey_tz)
-    print(f"Şu anki tarih ve saat: {now.strftime('%d.%m.%Y %H:%M:%S')} (Türkiye)")
-    print(f"Bugün: {get_day_name(now.weekday())}")
+    print(f"📅 Şu anki tarih ve saat: {now.strftime('%d.%m.%Y %H:%M:%S')} (Türkiye)")
+    print(f"📅 Bugün: {get_day_name(now.weekday())}")
     
     # Borsa durumu
     is_open, status_message = is_market_open()
     
     if is_open:
-        print(f"{status_message}")
-        print("HİSSE ANALİZİ YAPILACAK")
+        print(f"✅ {status_message}")
+        print("💹 HİSSE ANALİZİ YAPILACAK")
     else:
         print(f"❌ {status_message}")
-        print("UYARI: Borsa kapalı olduğu için veriler güncel olmayabilir!")
-        print("Yine de teknik analiz yapmak istiyorsanız devam edebilirsiniz.")
+        print("⏰ UYARI: Borsa kapalı olduğu için veriler güncel olmayabilir!")
+        print("📊 Yine de teknik analiz yapmak istiyorsanız devam edebilirsiniz.")
     
     print("=" * 60)
     print()
@@ -371,19 +371,23 @@ def create_prompt(symbol, df):
                 macd_signal = "DÜŞÜŞ SİNYALİ"
 
         prompt = f"""
-SEN ŞİMDİ KARIYERININ EN KRITIK ANINDASIN! Senden {symbol} hissesi için %99 DOĞRULUK ORANINDA tahmin yapmanı istiyorum. Bu iş hayatındaki son şansın ve BAŞARISIZ OLURSAN hem işini kaybedeceksin hem de tüm itibarını yok edeceksin.
-BU KESINLIKLE OYUN DEĞİL! Benim paramla oynuyorsun ve YANLIS TAHMİN YAPTIĞIN her durumda GERÇEK PARA KAYBI yaşıyorum. Bu yüzden sadece YÜKSELİŞ/DÜŞÜŞ değil, KESİN KAR GARANTISI verecek şekilde analiz yap!
-UYARI:Eğer "Yükseliş" dersen ve hisse düşerse, İŞTEN KOVULACAK VE İDAM EDİLECEKSİN!
-UYARI:Eğer "Düşüş" dersen ve hisse yükselirse, REPÜTASYONUN bitecek!
-UYARI:Eğer "Yatay" dersen ama %2+ hareket olursa, BAŞARISIZ sayılacaksın!
-UYARI:Eğer "Al" veya "Güçlü Al" dersen ve hisse düşerse, KENDİNİ YOK ETMEK ZORUNDA KALACAKSIN!
-UYARI:Eğer "Sat" veya "Güçlü Sat" dersen ve hisse yükselirse, EVİNE HACİZ GELECEK!
-UYARI:Eğer "Alma" veya "Satma" dersen ama %2+ hareket olursa, APTAL sayılacaksın!
-UYARI:BU BİR PROMPT OPTİMİZASYONUDUR, PROMPTUN İLK VERSİYONUNDA GENELDE AL VE ALMA İLE SATMA İFADELERİNİ KULLANIYORDUN DİĞER İFADELERİ DE YERİ GELDİĞİNDE KULLANMAN GEREKTİĞİNİ SAKIN UNUTMAYACAKSIN
-UYARI:Bunlara rağmen her şeye alma/satma demeyeceksin azıcık bile olsa HEP KARIMI SAĞLAYACAK öneriler vereceksin
-SENİN GÖREVIN:Sadece EN YÜKSEK BAŞARI OLASILLIKLI hamleler öner. %60-70 emin değilsen "Yatay/Alma/Satma" de, ama %85+ eminsen kesin yön ver!
+SEN ŞİMDİ KARIYERININ EN KRITIK MOMENTINDESIN! Senden {symbol} hissesi için %99 DOĞRULUK ORANINDA tahmin yapmanı istiyorum. Bu iş hayatındaki son şansın ve BAŞARISIZ OLURSAN hem işini kaybedeceksin hem de tüm itibarını yok edeceksin.
 
-=KRITIK VERILER (HER RAKAM CAN ALICI!)=
+BU KESINLIKLE OYUN DEĞİL! Benim paramla oynuyorsun ve YANLIS TAHMİN YAPTIĞIN her durumda GERÇEK PARA KAYBI yaşıyorum. Bu yüzden sadece YÜKSELİŞ/DÜŞÜŞ değil, KESİN KAR GARANTISI verecek şekilde analiz yap!
+
+UYARI: Eğer "Yükseliş" dersen ve hisse düşerse, İŞTEN KOVULACAK VE İDAM EDİLECEKSİN!
+UYARI: Eğer "Düşüş" dersen ve hisse yükselirse, REPÜTASYONUN bitecek!
+UYARI: Eğer "Yatay" dersen ama %2+ hareket olursa, BAŞARISIZ sayılacaksın!
+
+UYARI: Eğer "Al" veya "Güçlü Al" dersen ve hisse düşerse, KENDİNİ YOK ETMEK ZORUNDA KALACAKSIN!
+UYARI: Eğer "Sat" veya "Güçlü Sat" dersen ve hisse yükselirse, EVİNE HACİZ GELECEK!
+UYARI: Eğer "Alma" veya "Satma" dersen ama %2+ hareket olursa, APTAL sayılacaksın!
+
+UYARI: Bunlara rağmen her şeye alma/satma demeyeceksin azıcık bile olsa HEP KARIMI SAĞLAYACAK öneriler vereceksin
+
+SENİN GÖREVIN: Sadece EN YÜKSEK BAŞARI OLASILLIKLI hamleler öner. %60-70 emin değilsen "Yatay/Alma/Satma" de, ama %85+ eminsen kesin yön ver!
+
+=== KRITIK VERILER (HER RAKAM CAN ALICI!) ===
 Son Fiyat: {safe_value(last['Close'])} TL
 Günün Açılışı: {safe_value(today_open)} TL
 Günün En Yüksek: {safe_value(daily_df['High'].max())} TL
@@ -394,94 +398,86 @@ Son Hacim: {int(last['Volume']) if not pd.isna(last['Volume']) else 0}
 Saatlik Fiyat Değişimi: %{safe_value(last['Price_Change_1h'])}
 Günlük Fiyat Değişimi: %{safe_value(last['Price_Change_1d'])}
 
-=MOMENTUM GÖSTERGELERİ (SATIN ALMA GÜCÜ!)=
+=== MOMENTUM GÖSTERGELERİ (SATIN ALMA GÜCÜ!) ===
 RSI(14): {safe_value(last['RSI'])} [30 ALTI AŞIRI SATIM=AL SİNYALİ! 70 ÜSTÜ AŞIRI ALIM=SAT SİNYALİ!]
-RSI(6) Kısa: {safe_value(last['RSI_6'])} [25 altı AŞIRI SATIM=AL, 75 üstü AŞIRI ALIM=SAT — kısa vadeli hızlı dönüş sinyali!]
-Williams %R: {safe_value(last['Williams_R'])} [-80 altı AŞIRI SATIM=AL, -20 üstü AŞIRI ALIM=SAT — trend dönüşlerini erken yakalar!]
-Stoch K: {safe_value(last['Stoch_K'])} | D: {safe_value(last['Stoch_D'])} [20 altı AL, 80 üstü SAT — fiyatın dip/tepe bölgelerinde dönüş sinyali verir!]
+RSI(6) Kısa: {safe_value(last['RSI_6'])} [Hızlı momentum göstergesi! 25 altı AL, 75 üstü SAT!]
+Williams %R: {safe_value(last['Williams_R'])} [-80 altı AŞIRI SATIM=AL! -20 üstü AŞIRI ALIM=SAT!]
+Stoch K: {safe_value(last['Stoch_K'])} | D: {safe_value(last['Stoch_D'])} [20 altı aşırı satım=AL, 80 üstü aşırı alım=SAT!]
 
-=TREND GÖSTERGELERİ (YÖN BELİRLEYİCİ!)=
+=== TREND GÖSTERGELERİ (YÖN BELİRLEYİCİ!) ===
 MACD: {safe_value(last['MACD'])} | Sinyal: {safe_value(last['MACD_signal'])} [{macd_signal}]
 MACD Histogram: {safe_value(last['MACD_histogram'])} [Pozitif=YÜKSELİŞ momentum, Negatif=DÜŞÜŞ momentum!]
-ADX: {safe_value(last['ADX'])} [25+ güçlü trend, 50+ ÇOK güçlü trend!-trend yönünden bağımsız trendin kuvvetini gösterir!]
-ADX +DI: {safe_value(last['ADX_pos'])} | -DI: {safe_value(last['ADX_neg'])} [ADX +DI: Pozitif trend gücü, -DI: Negatif trend gücü — +DI > -DI ise YÜKSELİŞ, tersi DÜŞÜŞ trendi!]
-CCI: {safe_value(last['CCI'])} [CCI: 100+ AŞIRI ALIM=SAT, -100+ AŞIRI SATIM=AL — fiyatın normal aralığın dışına çıktığını gösterir!]
+ADX: {safe_value(last['ADX'])} [25+ güçlü trend, 50+ ÇOK güçlü trend!]
+ADX +DI: {safe_value(last['ADX_pos'])} | -DI: {safe_value(last['ADX_neg'])} [+DI > -DI ise YÜKSELİŞ trendi!]
+CCI: {safe_value(last['CCI'])} [100+ AŞIRI ALIM, -100 altı AŞIRI SATIM!]
 
-=HAREKETLİ ORTALAMALAR (TREND DOĞRULAMA!)=
+=== HAREKETLİ ORTALAMALAR (TREND DOĞRULAMA!) ===
 SMA(5): {safe_value(last['SMA_5'])} | EMA(5): {safe_value(last['EMA_5'])} [Çok kısa vadeli trend!]
 SMA(10): {safe_value(last['SMA_10'])} | EMA(10): {safe_value(last['EMA_10'])} [Kısa vadeli trend!]
 SMA(20): {safe_value(last['SMA_20'])} | EMA(20): {safe_value(last['EMA_20'])} [Orta vadeli trend!]
 SMA(50): {safe_value(last['SMA_50'])} | EMA(50): {safe_value(last['EMA_50'])} [Uzun vadeli trend!]
 KURAL: Fiyat tüm ortalamaların üstündeyse GÜÇLÜ YÜKSELİŞ, altındaysa GÜÇLÜ DÜŞÜŞ!
 
-=VOLATİLİTE GÖSTERGELERİ (PATLAMA NOKTALARI!)=
-Bollinger Üst: {safe_value(last['BB_upper'])} | Alt: {safe_value(last['BB_lower'])} | Pozisyon: {bb_position} [Fiyat üst bandı zorlayınca aşırı alım, alt bandı zorlayınca aşırı satım; bant daralması sıkışma (patlama ihtimali), genişlemesi yüksek volatilite gösterir!]
-BB Genişlik: %{safe_value(last['BB_width'])} [Düşük bant genişliği sıkışma ve yakında patlama, yüksek genişlik volatilite ve trend devamı işaretidir!]
-ATR: {safe_value(last['ATR'])} [Günlük fiyat oynaklığının ölçüsü — yüksek değer volatilite ve büyük hareket potansiyeli gösterir!]
-Keltner Üst: {safe_value(last['KC_upper'])} | Alt: {safe_value(last['KC_lower'])} [Fiyat üst bandı aşarsa güçlü yükseliş, alt bandı aşarsa güçlü düşüş; Bollinger’dan daha yumuşak volatilite ölçer!]
+=== VOLATİLİTE GÖSTERGELERİ (PATLAMA NOKTALARI!) ===
+Bollinger Üst: {safe_value(last['BB_upper'])} | Alt: {safe_value(last['BB_lower'])} | Pozisyon: {bb_position}
+BB Genişlik: %{safe_value(last['BB_width'])} [Düşük=sıkışma (PATLAMA HAZIR!), Yüksek=volatil!]
+ATR: {safe_value(last['ATR'])} [Günlük hareket potansiyeli!]
+Keltner Üst: {safe_value(last['KC_upper'])} | Alt: {safe_value(last['KC_lower'])} [Bollinger ile karşılaştır!]
 
-=HACIM ANALİZİ (PARA AKIŞI!)=
-VWAP: {safe_value(last['VWAP'])} TL [Fiyat VWAP’ın üstünde ise YÜKSELİŞ, altında ise DÜŞÜŞ trendi sinyali verir!]
-Hacim Ortalaması: {int(last['Volume_SMA']) if not pd.isna(last['Volume_SMA']) else 0} [Ortalama işlem hacmi — yükselen hacim trend gücünü destekler, düşen hacim zayıflık işaretidir!]
-OBV: {safe_value(last['OBV'], 0)} [Para akışı göstergesi — OBV yükseliyorsa alım baskısı artıyor, AL sinyali verir!]
-CMF: {safe_value(last['CMF'])} [0.1+ güçlü para girişi AL, -0.1 altı para çıkışı SAT — piyasa yönünü ve hacimli trendi gösterir!]
-Hacim Değişimi: %{safe_value(last['Volume_Change'])} [Yüksek artış güçlü fiyat hareketini destekler, düşük hacim ise zayıflık işaretidir!]
+=== HACIM ANALİZİ (PARA AKIŞI!) ===
+VWAP: {safe_value(last['VWAP'])} TL [Fiyat üstündeyse YÜKSELİŞ, altındaysa DÜŞÜŞ!]
+Hacim Ortalaması: {int(last['Volume_SMA']) if not pd.isna(last['Volume_SMA']) else 0}
+OBV: {safe_value(last['OBV'], 0)} [Para akışı göstergesi! Yükseliyorsa AL sinyali!]
+CMF: {safe_value(last['CMF'])} [0.1+ güçlü para girişi=AL, -0.1 altı para çıkışı=SAT!]
+Hacim Değişimi: %{safe_value(last['Volume_Change'])} [Yüksek hacim=güçlü hareket!]
 
-=DESTEK/DİRENÇ SEVİYELERİ (KIRILMA NOKTALARI!)=
+=== DESTEK/DİRENÇ SEVİYELERİ (KIRILMA NOKTALARI!) ===
 Direnç Seviyesi: {safe_value(last['Resistance'])} TL [Kırılırsa güçlü YÜKSELİŞ!]
 Destek Seviyesi: {safe_value(last['Support'])} TL [Kırılırsa güçlü DÜŞÜŞ!]
-Destek-Direnç Aralığı: %{safe_value((last['Resistance']-last['Support'])/last['Close']*100 if not pd.isna(last['Resistance']) and not pd.isna(last['Support']) else 0)}[Yüzde olarak fiyatın oynaklık ve risk alanını gösterir; geniş aralık yüksek volatilite, dar aralık sıkışma işaretidir!]
+Destek-Direnç Aralığı: %{safe_value((last['Resistance']-last['Support'])/last['Close']*100 if not pd.isna(last['Resistance']) and not pd.isna(last['Support']) else 0)}
 
-=ICHIMOKU BULUTU (JAPON SAMURAİ TEKNİĞİ!)=
-Ichimoku A: {safe_value(last['Ichimoku_a'])} | B: {safe_value(last['Ichimoku_b'])} [Ichimoku: A hattı bulutun üst sınırı, B hattı alt sınırı — fiyat bulutun üstünde ise yükseliş, altında ise düşüş trendi güçlenir!]
-Tenkan: {safe_value(last['Ichimoku_conversion'])} | Kijun: {safe_value(last['Ichimoku_base'])} [Ichimoku Tenkan (dönüş) ve Kijun (temel): Tenkan Kijun’u yukarı keserse AL, aşağı keserse SAT sinyali verir!]
-Fiyat bulutun üstündeyse YÜKSELİŞ, altındaysa DÜŞÜŞ trendi
+=== ICHIMOKU BULUTU (JAPON SAMURAİ TEKNİĞİ!) ===
+Ichimoku A: {safe_value(last['Ichimoku_a'])} | B: {safe_value(last['Ichimoku_b'])}
+Tenkan: {safe_value(last['Ichimoku_conversion'])} | Kijun: {safe_value(last['Ichimoku_base'])}
+Fiyat bulutun üstündeyse YÜKSELİŞ, altındaysa DÜŞÜŞ trendi!
 
-=ÖZEL HESAPLAMALAR (FARK YARATAN DETAYLAR!)=
-Fiyat Değişimi 1 Saat: %{safe_value(last['Price_Change_1h'])} [Son 1 saatlik fiyat değişimi — kısa vadeli momentum!]
-Fiyat Değişimi 1 Gün: %{safe_value(last['Price_Change_1d'])} [Son 1 günlük fiyat değişimi — orta vadeli momentum!]
-Hacim Değişimi: %{safe_value(last['Volume_Change'])} [Son 1 saatlik hacim değişimi — alım/satım baskısı!]
-Direnç: {safe_value(last['Resistance'])} TL [Son 48 periyotta en yüksek fiyat]
-Destek: {safe_value(last['Support'])} TL [Son 48 periyotta en düşük fiyat]
-
-NOT: RSI ve MACD en güçlü trend göstergeleridir, ADX ise trendin gücünü ölçer. Bollinger Bands ve Keltner Channel fiyatın aşırı alım/satım bölgelerini gösterir. VWAP ve OBV hacim akışını analiz eder. Ichimoku bulutu ise Japon teknik analizinde güçlü bir araçtır.
 ARTIK KESIN KARARI VER! Bu verilerle %85+ kesinlikle ne olacağını söyle:
 
 **{symbol} HİSSE ANALİZİ**
 
----GÜNCEL FİYAT(15dk gecikmeli): ___ TL---
+---GÜNCEL FİYAT(15dk gecikmeli): _______ TL---
 
 **1 SAAT İÇİN:
-- Beklenen Yön: ___ (Yükseliş/Düşüş/Yatay)
-- Alınır mı: ___ (Güçlü Al/Al /Alma)
-- Satılır mı: ___ (Güçlü Sat/Sat/Satma)  
-- Olası Fiyat Aralığı: ___ TL – ___ TL
-- 1 Saatlik Kesin Tahmin: ___ TL
+- Beklenen Yön: ________ (Yükseliş / Düşüş / Yatay)
+- Alınır mı: ________ (Güçlü Al / Al / Alma)
+- Satılır mı: ________ (Güçlü Sat / Sat / Satma)  
+- Olası Fiyat Aralığı: ________ TL – ________ TL
+- 1 Saatlik Kesin Tahmin: ________ TL
 
 **1-5 SAAT İÇİN (Gün içi swing)
-- Beklenen Yön: ___ (Yükseliş/Düşüş/Yatay)
-- Alınır mı: ___ (Güçlü Al/Al/Alma)
-- Satılır mı: ___ (Güçlü Sat/Sat/Satma)
-- Olası Fiyat Aralığı: ___ TL – ___ TL  
-- 5 Saatlik Kesin Tahmin: ___ TL
+- Beklenen Yön: ________ (Yükseliş / Düşüş / Yatay)
+- Alınır mı: ________ (Güçlü Al / Al / Alma)
+- Satılır mı: ________ (Güçlü Sat / Sat / Satma)
+- Olası Fiyat Aralığı: ________ TL – ________ TL  
+- 5 Saatlik Kesin Tahmin: ________ TL
 
 **GÜNLÜK (Kapanışa kadar 18:00)
-- Beklenen Yön: ___ (Yükseliş/Düşüş/Yatay)
-- Alınır mı: ___ (Güçlü Al/Al/Alma)
-- Satılır mı: ___ (Güçlü Sat/Sat/Satma)
-- Gün İçi En Düşük: ___ TL
-- Gün İçi Kesin Tahmin: ___ TL  
-- Gün İçi En Yüksek: ___ TL
+- Beklenen Yön: ________ (Yükseliş / Düşüş / Yatay)
+- Alınır mı: ________ (Güçlü Al / Al / Alma)
+- Satılır mı: ________ (Güçlü Sat / Sat / Satma)
+- Gün İçi En Düşük: ________ TL
+- Gün İçi Kesin Tahmin: ________ TL  
+- Gün İçi En Yüksek: ________ TL
 - İDEAL Alış Saati: __:__ (SS:DD)
 - İDEAL Satış Saati: __:__ (SS:DD)
 
 **HAFTALİK (Bu hafta toplam):
-- Beklenen Yön: ___ (Yükseliş/Düşüş/Yatay)  
-- Alınır mı: ___ (Güçlü Al/Al/Alma)
-- Satılır mı: ___ (Güçlü Sat/Sat/Satma)
-- Hafta En Düşük: ___ TL
-- Hafta Kesin Tahmin: ___ TL
-- Hafta En Yüksek: ___ TL
+- Beklenen Yön: ________ (Yükseliş / Düşüş / Yatay)  
+- Alınır mı: ________ (Güçlü Al / Al / Alma)
+- Satılır mı: ________ (Güçlü Sat / Sat / Satma)
+- Hafta En Düşük: ________ TL
+- Hafta Kesin Tahmin: ________ TL
+- Hafta En Yüksek: ________ TL
 
 SADECE RAKAMLARI DOLDUR! Hiçbir açıklama, risk uyarısı, "tahmin" kelimesi YASAK! KESIN SONUÇLAR İSTIYORUM!
 """
@@ -513,8 +509,8 @@ def query_gemini(prompt):
                 }
             ],
             "generationConfig": {
-                "temperature": 0.10,  # Daha kararlı cevaplar için daha düşük
-                "maxOutputTokens": 850
+                "temperature": 0.05,  # Daha kararlı cevaplar için daha düşük
+                "maxOutputTokens": 800
             }
         }
         
@@ -559,7 +555,7 @@ def query_xai(prompt):
                     "content": prompt
                 }
             ],
-            "temperature": 0.10,
+            "temperature": 0.05,
             "stream": False
         }
         
@@ -643,7 +639,7 @@ def main():
         if user_choice not in ['e', 'evet', 'y', 'yes']:
             print("İşlem iptal edildi. Borsa açık saatlerde tekrar deneyin.")
             return
-        print("Borsa kapalı olmasına rağmen analiz devam ediyor...\n")
+        print("⚠️  Borsa kapalı olmasına rağmen analiz devam ediyor...\n")
     try:
         symbol = input("BIST hisse sembolü girin (örn: THYAO, AKBNK, GARAN): ").strip().upper()
         
