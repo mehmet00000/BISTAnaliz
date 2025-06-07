@@ -227,7 +227,10 @@ Bu proje MIT Lisansı ile lisanslanmıştır – detaylar için [LICENSE](LICENS
 
 ## 🔄 Değişiklik Günlüğü
 
-### v1.0.0 (Güncel)
+### v1.1.0 (Güncel)
+- Borsa Kapalı uyarısı eklendi
+
+### v1.0.0
 - İlk sürüm
 - Çoklu AI entegrasyonu
 - 30+ teknik gösterge
