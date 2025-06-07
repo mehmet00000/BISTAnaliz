@@ -227,7 +227,7 @@ Bu proje MIT Lisansı ile lisanslanmıştır – detaylar için [LICENSE](LICENS
 
 ## 🔄 Değişiklik Günlüğü
 
-### v1.0.0 (Güncel)
+### v2.0.0 (Güncel)
 - AI optimizasyonu
 - Gösterge optimizasyonları
 - Kod optimizasyonları
