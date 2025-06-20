@@ -167,23 +167,23 @@ def get_stock_data(symbol):
     """Hisse senedi verilerini indir ve temizle"""
     try:
         now = datetime.datetime.now()
-        past = now - datetime.timedelta(days=21)  # Daha fazla veri için 21 gün
+        past = now - datetime.timedelta(days=26)  # 21 günlük geçmiş veri
         
         print(f"{symbol}.IS hissesi için veri indiriliyor...")
-        data = yf.download(f"{symbol}.IS", start=past.strftime('%Y-%m-%d'), 
-                          end=now.strftime('%Y-%m-%d'), interval='15m', progress=False)
+        
+        # 26 gün boyunca her gün için 15 dakikalık veri alıyoruz
+        data = yf.Ticker(f"{symbol}.IS").history(period="26d", interval="15m")  # 15 dakika aralıklarıyla veri
         
         if data.empty:
             print(f"Hata: {symbol} hissesi için veri bulunamadı.")
             print("Hisse sembolünün doğru olduğundan emin olun.")
             return None
 
-        # Sütun isimlerini kontrol et ve düzelt
-        if isinstance(data.columns, pd.MultiIndex):
-            data.columns = data.columns.droplevel(1)
+        # Gereksiz bilgileri temizleyip sadece gerekli olan sütunları bırakıyoruz
+        data = data[['Close', 'Open', 'High', 'Low', 'Volume']]  # Gereksiz sütunları kaldırdık
         
-        # Veri tiplerini düzelt
-        numeric_columns = ['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']
+        # Veri türlerini düzeltmek
+        numeric_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
         for col in numeric_columns:
             if col in data.columns:
                 data[col] = pd.to_numeric(data[col], errors='coerce')
@@ -193,10 +193,10 @@ def get_stock_data(symbol):
         
         print(f"Toplam {len(data)} adet veri noktası indirildi.")
         
-        if len(data) < 100:  # Yeterli veri var mı kontrol et
-            print("Uyarı: Teknik analiz için yeterli veri yok. En az 100 veri noktası gerekli.")
-            return None
-            
+        # En güncel kapanış fiyatını al
+        latest_close = data['Close'].iloc[-1]
+        # Gereksiz "Güncel fiyat" ve "Son işlem verisi" bilgilerini yazdırmıyoruz
+
         return data
         
     except Exception as e:
@@ -444,6 +444,21 @@ Hacim Değişimi: %{safe_value(last['Volume_Change'])} [Son 1 saatlik hacim değ
 Direnç: {safe_value(last['Resistance'])} TL [Son 48 periyotta en yüksek fiyat]
 Destek: {safe_value(last['Support'])} TL [Son 48 periyotta en düşük fiyat]
 
+TERİMLERİN AÇIKLAMASI:
+- Volatilite: Fiyatın kısa sürede ne kadar değiştiğini, oynaklığını gösterir. Yüksek volatilite = büyük fiyat hareketleri, düşük volatilite = durağanlık.
+- Momentum: Fiyatın yükselme veya düşme hızını gösterir, trendin devam edip etmeyeceğini anlamaya yarar.
+- RSI: Fiyatın aşırı alım veya satımda olup olmadığını gösteren bir osilatör (0-100 arası). 70 üzeri aşırı alım, 30 altı aşırı satım.
+- MACD: Trendin yönünü ve momentumunu gösteren bir indikatör. MACD çizgisi sinyalin üstündeyse yükseliş, altındaysa düşüş eğilimi.
+- ADX: Trendin gücünü ölçer, 25 üzeri güçlü trend, 50 üzeri çok güçlü trend.
+- Bollinger Bandı: Fiyatın standart sapmasına göre üst ve alt bantlar çizer, bant dışı hareketler aşırı alım/satım göstergesidir.
+- VWAP: Hacim ağırlıklı ortalama fiyat, fiyat bunun üstündeyse yükseliş baskısı, altındaysa düşüş baskısı vardır.
+- OBV: Hacimle fiyat hareketini birleştirir, yükseliyorsa alım baskısı artıyor demektir.
+- CMF: Hacim ve fiyatı birleştirerek piyasaya para giriş/çıkışını ölçer. 0.1 üzeri güçlü giriş, -0.1 altı güçlü çıkış.
+- Ichimoku Bulutu: Fiyat bulutun üstündeyse yükseliş, altındaysa düşüş trendi güçlüdür.
+- Destek: Fiyatın aşağıda tutunduğu, alıcıların güçlü olduğu seviye.
+- Direnç: Fiyatın yukarıda zorlandığı, satıcıların güçlü olduğu seviye.
+- SMA/EMA: Fiyatın ortalamasını alarak trendi düzleştirir, kısa vadeli EMA daha hızlı tepki verir.
+- Stochastic: Fiyatın kapanış seviyesini belirli bir aralıkta değerlendirir, 20 altı aşırı satım, 80 üstü aşırı alım gösterir.
 NOT: RSI ve MACD en güçlü trend göstergeleridir, ADX ise trendin gücünü ölçer. Bollinger Bands ve Keltner Channel fiyatın aşırı alım/satım bölgelerini gösterir. VWAP ve OBV hacim akışını analiz eder. Ichimoku bulutu ise Japon teknik analizinde güçlü bir araçtır.
 ARTIK KESIN KARARI VER! Bu verilerle %85+ kesinlikle ne olacağını söyle:
 
